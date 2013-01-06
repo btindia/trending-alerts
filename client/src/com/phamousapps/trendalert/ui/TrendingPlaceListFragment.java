@@ -8,13 +8,14 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
@@ -23,8 +24,7 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.phamousapps.trendalert.data.FsResponse;
 import com.phamousapps.trendalert.data.Venue;
-import com.phamousapps.trendalert.notification.NotificationPackage;
-import com.phamousapps.trendalert.notification.NotificationReceiver;
+import com.phamousapps.trendalert.ui.phone.TrendingPlaceListActivity;
 import com.phamousapps.trendalert.utils.FsSettings;
 import com.phamousapps.trendalert.utils.LogHelper;
 import com.phamousapps.trendalert.utils.RequestHelper;
@@ -108,9 +108,27 @@ public class TrendingPlaceListFragment extends ListFragment implements
 
 		mQueryParam = "";
 
-		Bundle extras = getArguments();
-		if (extras != null) {
-			mQueryParam = extras.getString(ARG_ITEM_ID);
+		Bundle argExtras = getArguments();
+		if (argExtras != null) {
+			mQueryParam = argExtras.getString(ARG_ITEM_ID);
+		}
+
+		Bundle intentExtras = getActivity().getIntent().getExtras();
+		if (intentExtras != null) {
+			mQueryParam = intentExtras
+					.getString(TrendingPlaceListFragment.ARG_ITEM_ID);
+		}
+
+		if (mQueryParam.isEmpty()) {
+
+			SharedPreferences sp = PreferenceManager
+					.getDefaultSharedPreferences(getActivity());
+			mQueryParam = sp.getString(
+					TrendingPlaceListActivity.SEARCH_PARAM_KEY, "");
+		}
+
+		if (LogHelper.isLoggable(LOG_TAG)) {
+			Log.d(LOG_TAG, "mQueryParam: " + mQueryParam);
 		}
 
 		// Check if enabled and if not send user to the GSP settings
@@ -291,14 +309,6 @@ public class TrendingPlaceListFragment extends ListFragment implements
 					setListAdapter(mAdapter);
 					setActivateOnItemClick(true);
 
-					// mCallbacks.onItemSelected((Venue) mAdapter.getItem(0));
-
-					Intent noteAction = new Intent(NotificationReceiver.ACTION);
-
-					NotificationPackage np = new NotificationPackage(result);
-					noteAction.putExtra(NotificationPackage.ARG_KEY, np);
-
-					getActivity().sendBroadcast(noteAction);
 				}
 			}
 		}.execute();

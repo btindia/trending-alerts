@@ -1,13 +1,16 @@
 package com.phamousapps.trendalert.ui.phone;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.phamousapps.trendalert.R;
+import com.phamousapps.trendalert.alarm.AlarmHelper;
 import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.ui.SearchFragment;
 import com.phamousapps.trendalert.ui.TrendingPlaceDetailFragment;
@@ -32,6 +35,7 @@ import com.phamousapps.trendalert.ui.TrendingPlaceListFragment;
 public class TrendingPlaceListActivity extends FragmentActivity implements
 		TrendingPlaceListFragment.Callbacks, SearchFragment.Callbacks {
 
+	public static final String SEARCH_PARAM_KEY = "com.phamousapps.trendalert.SEARCH_PARAM";
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
@@ -43,15 +47,21 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_trendingplace_list);
 
+		new AlarmHelper(this, 1000 * 30);
+
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		String searchParam = sp.getString(SEARCH_PARAM_KEY, "");
+
+		Bundle arguments = new Bundle();
+		arguments.putString(TrendingPlaceListFragment.ARG_ITEM_ID, searchParam);
+
 		if (findViewById(R.id.trendingplace_detail_container) != null) {
 			// The detail container view will be present only in the
 			// large-screen layouts (res/values-large and
 			// res/values-sw600dp). If this view is present, then the
 			// activity should be in two-pane mode.
 			mTwoPane = true;
-
-			Bundle arguments = new Bundle();
-			arguments.putString(TrendingPlaceListFragment.ARG_ITEM_ID, "");
 
 			TrendingPlaceListFragment fragment = new TrendingPlaceListFragment();
 			fragment.setArguments(arguments);
@@ -64,6 +74,12 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 			// ((TrendingPlaceListFragment) getSupportFragmentManager()
 			// .findFragmentById(R.id.trendingplace_list))
 			// .setActivateOnItemClick(true);
+		} else {
+			// In two-pane mode, list items should be given the
+			// 'activated' state when touched.
+			// ((TrendingPlaceListFragment) getSupportFragmentManager()
+			// .findFragmentById(R.id.trendingplace_list))
+			// .setArguments(arguments);
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
@@ -117,6 +133,13 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 
 	@Override
 	public void onEditTextComplete(String string) {
+
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = sp.edit();
+
+		editor.putString(SEARCH_PARAM_KEY, string);
+		editor.commit();
 
 		Toast.makeText(this, "Text Received: " + string, Toast.LENGTH_SHORT)
 				.show();
