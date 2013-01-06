@@ -22,7 +22,7 @@ public class AlarmHelper {
 		// m.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(),
 		// interval, pi);
 
-		m.setRepeating(AlarmManager.ELAPSED_REALTIME,
+		m.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
 				SystemClock.elapsedRealtime(), interval, pi);
 
 		if (LogHelper.isLoggable(LOG_TAG)) {

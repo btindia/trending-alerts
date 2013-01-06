@@ -15,6 +15,7 @@ import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.ui.SearchFragment;
 import com.phamousapps.trendalert.ui.TrendingPlaceDetailFragment;
 import com.phamousapps.trendalert.ui.TrendingPlaceListFragment;
+import com.phamousapps.trendalert.utils.FsSettings;
 
 /**
  * An activity representing a list of TrendingPlaces. This activity has
@@ -47,7 +48,7 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_trendingplace_list);
 
-		new AlarmHelper(this, 1000 * 30);
+		new AlarmHelper(this, FsSettings.INTERVAL);
 
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(this);
