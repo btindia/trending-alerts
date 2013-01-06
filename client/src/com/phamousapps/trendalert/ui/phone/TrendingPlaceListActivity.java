@@ -3,9 +3,13 @@ package com.phamousapps.trendalert.ui.phone;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.phamousapps.trendalert.R;
 import com.phamousapps.trendalert.data.Venue;
+import com.phamousapps.trendalert.ui.SearchFragment;
 import com.phamousapps.trendalert.ui.TrendingPlaceDetailFragment;
 import com.phamousapps.trendalert.ui.TrendingPlaceListFragment;
 
@@ -26,7 +30,7 @@ import com.phamousapps.trendalert.ui.TrendingPlaceListFragment;
  * selections.
  */
 public class TrendingPlaceListActivity extends FragmentActivity implements
-		TrendingPlaceListFragment.Callbacks {
+		TrendingPlaceListFragment.Callbacks, SearchFragment.Callbacks {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -46,14 +50,38 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 			// activity should be in two-pane mode.
 			mTwoPane = true;
 
+			Bundle arguments = new Bundle();
+			arguments.putString(TrendingPlaceListFragment.ARG_ITEM_ID, "");
+
+			TrendingPlaceListFragment fragment = new TrendingPlaceListFragment();
+			fragment.setArguments(arguments);
+			// fragment.setActivateOnItemClick(true);
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.trendingplace_list, fragment).commit();
+
 			// In two-pane mode, list items should be given the
 			// 'activated' state when touched.
-			((TrendingPlaceListFragment) getSupportFragmentManager()
-					.findFragmentById(R.id.trendingplace_list))
-					.setActivateOnItemClick(true);
+			// ((TrendingPlaceListFragment) getSupportFragmentManager()
+			// .findFragmentById(R.id.trendingplace_list))
+			// .setActivateOnItemClick(true);
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+
+		Intent detailIntent = new Intent(this, SearchActivity.class);
+		startActivity(detailIntent);
+
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 	/**
@@ -68,7 +96,8 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putString(TrendingPlaceDetailFragment.ARG_ITEM_ID, venue.getId());
+			arguments.putString(TrendingPlaceDetailFragment.ARG_ITEM_ID,
+					venue.getId());
 			TrendingPlaceDetailFragment fragment = new TrendingPlaceDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
@@ -80,9 +109,38 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this,
 					TrendingPlaceDetailActivity.class);
-			detailIntent.putExtra(TrendingPlaceDetailFragment.ARG_ITEM_ID, venue.getId());
+			detailIntent.putExtra(TrendingPlaceDetailFragment.ARG_ITEM_ID,
+					venue.getId());
 			startActivity(detailIntent);
 		}
-		
+	}
+
+	@Override
+	public void onEditTextComplete(String string) {
+
+		Toast.makeText(this, "Text Received: " + string, Toast.LENGTH_SHORT)
+				.show();
+
+		if (mTwoPane) {
+			// In two-pane mode, show the detail view in this activity by
+			// adding or replacing the detail fragment using a
+			// fragment transaction.
+			Bundle arguments = new Bundle();
+			arguments.putString(TrendingPlaceListFragment.ARG_ITEM_ID, string);
+
+			TrendingPlaceListFragment fragment = new TrendingPlaceListFragment();
+			fragment.setArguments(arguments);
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.trendingplace_list, fragment).commit();
+
+		} else {
+			// In single-pane mode, simply start the detail activity
+			// for the selected item ID.
+			// Intent detailIntent = new Intent(this,
+			// TrendingPlaceDetailActivity.class);
+			// detailIntent.putExtra(TrendingPlaceDetailFragment.ARG_ITEM_ID,
+			// venue.getId());
+			// startActivity(detailIntent);
+		}
 	}
 }
