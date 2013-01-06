@@ -3,12 +3,12 @@ package com.phamousapps.trendalert.ui;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,6 +23,8 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.phamousapps.trendalert.data.FsResponse;
 import com.phamousapps.trendalert.data.Venue;
+import com.phamousapps.trendalert.notification.NotificationPackage;
+import com.phamousapps.trendalert.notification.NotificationReceiver;
 import com.phamousapps.trendalert.utils.FsSettings;
 import com.phamousapps.trendalert.utils.LogHelper;
 import com.phamousapps.trendalert.utils.RequestHelper;
@@ -199,10 +201,10 @@ public class TrendingPlaceListFragment extends ListFragment implements
 	}
 
 	public void fetchNewVenues(final Location location) {
-		new AsyncTask<Void, Void, List<Venue>>() {
+		new AsyncTask<Void, Void, ArrayList<Venue>>() {
 
 			@Override
-			protected List<Venue> doInBackground(Void... params) {
+			protected ArrayList<Venue> doInBackground(Void... params) {
 
 				String lat = String.valueOf(location.getLatitude());
 				String lon = String.valueOf(location.getLongitude());
@@ -262,7 +264,7 @@ public class TrendingPlaceListFragment extends ListFragment implements
 					}
 				}
 
-				List<Venue> venueList = new ArrayList<Venue>();
+				ArrayList<Venue> venueList = new ArrayList<Venue>();
 				for (String key : trendingSearches.keySet()) {
 					venueList.add(trendingSearches.get(key));
 				}
@@ -281,16 +283,23 @@ public class TrendingPlaceListFragment extends ListFragment implements
 			}
 
 			@Override
-			protected void onPostExecute(List<Venue> result) {
+			protected void onPostExecute(ArrayList<Venue> result) {
 				super.onPostExecute(result);
 
 				if (!result.isEmpty()) {
 					mAdapter = new VenueAdapter(getActivity(), result);
 					setListAdapter(mAdapter);
+					setActivateOnItemClick(true);
 
-					mCallbacks.onItemSelected((Venue) mAdapter.getItem(0));
+					// mCallbacks.onItemSelected((Venue) mAdapter.getItem(0));
+
+					Intent noteAction = new Intent(NotificationReceiver.ACTION);
+
+					NotificationPackage np = new NotificationPackage(result);
+					noteAction.putExtra(NotificationPackage.ARG_KEY, np);
+
+					getActivity().sendBroadcast(noteAction);
 				}
-
 			}
 		}.execute();
 	}

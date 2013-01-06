@@ -42,6 +42,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TrendingPlaceListActivity" />
         </activity>
+        
+        <receiver android:name=".notification.NotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.phamousapps.trendalert.NOTIFICATION_RECEIVED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
