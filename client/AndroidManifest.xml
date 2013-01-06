@@ -34,6 +34,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TrendingPlaceListActivity" />
         </activity>
+        <activity
+            android:name=".ui.phone.SearchActivity"
+            android:label="@string/title_search"
+            android:parentActivityName=".TrendingPlaceListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TrendingPlaceListActivity" />
+        </activity>
     </application>
 
 </manifest>

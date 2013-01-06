@@ -3,5 +3,7 @@
 
     <string name="app_name">IWannaHelp</string>
     <string name="title_trendingplace_detail">TrendingPlace Detail</string>
+    <string name="title_search">Search</string>
+    <string name="menu_search">Search</string>
 
 </resources>

@@ -9,21 +9,18 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.phamousapps.trendalert.R;
 import com.phamousapps.trendalert.data.FsResponse;
 import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.utils.FsSettings;
@@ -44,6 +41,8 @@ public class TrendingPlaceListFragment extends ListFragment implements
 
 	private static final String LOG_TAG = TrendingPlaceListFragment.class
 			.getSimpleName();
+
+	public static final String ARG_ITEM_ID = "item_id";
 
 	private LocationManager mLocationManager;
 	private VenueAdapter mAdapter;
@@ -94,6 +93,8 @@ public class TrendingPlaceListFragment extends ListFragment implements
 	public TrendingPlaceListFragment() {
 	}
 
+	private String mQueryParam;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -103,13 +104,20 @@ public class TrendingPlaceListFragment extends ListFragment implements
 		boolean enabled = mLocationManager
 				.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
+		mQueryParam = "";
+
+		Bundle extras = getArguments();
+		if (extras != null) {
+			mQueryParam = extras.getString(ARG_ITEM_ID);
+		}
+
 		// Check if enabled and if not send user to the GSP settings
 		// Better solution would be to display a dialog and suggesting to
 		// go to the settings
-		if (!enabled) {
-			Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-			startActivity(intent);
-		}
+		// if (!enabled) {
+		// Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		// startActivity(intent);
+		// }
 
 		Criteria criteria = new Criteria();
 		String provider = mLocationManager.getBestProvider(criteria, true);
@@ -121,7 +129,7 @@ public class TrendingPlaceListFragment extends ListFragment implements
 		super.onViewCreated(view, savedInstanceState);
 
 		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null
+		if ((savedInstanceState != null)
 				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
@@ -204,55 +212,58 @@ public class TrendingPlaceListFragment extends ListFragment implements
 				String locationParams = builder.toString();
 
 				builder = new StringBuilder();
-				builder.append(FsSettings.URL_TRENDING_AUTH).append(locationParams);
+				builder.append(FsSettings.URL_TRENDING_AUTH).append(
+						locationParams);
 				String trendingUrl = builder.toString();
 
-				builder = new StringBuilder();
-				builder.append(FsSettings.URL_SEARCH_AUTH).append(locationParams);
-				builder.append("&query=art");
-				String searchUrl = builder.toString();
-				
 				String trendingResponse = RequestHelper.simpleGet(trendingUrl);
-				String searchResponse = RequestHelper.simpleGet(searchUrl);
-				
+
 				Gson gson = new Gson();
 				FsResponse trending = gson.fromJson(trendingResponse,
 						FsResponse.class);
 
-				FsResponse search = gson.fromJson(searchResponse,
-						FsResponse.class);
-				
-				Venue[] trendingVenues = trending.getResponse()
-						.getVenues();
-				
-				Venue[] searchVenues = search.getResponse()
-						.getVenues();
-				
-				Set<String> searchKeys = new HashSet<String>();
+				Venue[] trendingVenues = trending.getResponse().getVenues();
 
-				for (Venue venue : searchVenues) {
-					searchKeys.add(venue.getId());
-					
-					if (LogHelper.isLoggable(LOG_TAG)) {
-						Log.d(LOG_TAG, "Adding set key: " + venue.getId());
+				Set<String> searchKeys = new HashSet<String>();
+				if (!mQueryParam.isEmpty()) {
+					builder = new StringBuilder();
+					builder.append(FsSettings.URL_SEARCH_AUTH).append(
+							locationParams);
+					builder.append("&query=").append(mQueryParam);
+					String searchUrl = builder.toString();
+
+					String searchResponse = RequestHelper.simpleGet(searchUrl);
+
+					FsResponse search = gson.fromJson(searchResponse,
+							FsResponse.class);
+
+					Venue[] searchVenues = search.getResponse().getVenues();
+
+					for (Venue venue : searchVenues) {
+						searchKeys.add(venue.getId());
+
+						if (LogHelper.isLoggable(LOG_TAG)) {
+							Log.d(LOG_TAG, "Adding set key: " + venue.getId());
+						}
 					}
 				}
-				
+
 				Map<String, Venue> trendingSearches = new HashMap<String, Venue>();
 				for (Venue venue : trendingVenues) {
 					final String id = venue.getId();
-					
+
 					if (LogHelper.isLoggable(LOG_TAG)) {
 						Log.d(LOG_TAG, "Checking trendd key: " + venue.getId());
 					}
-					
-					if(searchKeys.contains(id)){
+
+					if (searchKeys.contains(id) || searchKeys.isEmpty()) {
+						// If a search matched or there was no search result
 						trendingSearches.put(id, venue);
 					}
 				}
-				
+
 				List<Venue> venueList = new ArrayList<Venue>();
-				for (String  key : trendingSearches.keySet()) {
+				for (String key : trendingSearches.keySet()) {
 					venueList.add(trendingSearches.get(key));
 				}
 
@@ -260,11 +271,11 @@ public class TrendingPlaceListFragment extends ListFragment implements
 
 					Log.d(LOG_TAG, "Merged items: " + venueList.size());
 					for (Venue venue : venueList) {
-						Log.d(LOG_TAG, "name:" + venue.getName() + ", id:" + venue.getId());	
+						Log.d(LOG_TAG, "name:" + venue.getName() + ", id:"
+								+ venue.getId());
 					}
 				}
 
-				
 				return venueList;
 
 			}
@@ -273,9 +284,11 @@ public class TrendingPlaceListFragment extends ListFragment implements
 			protected void onPostExecute(List<Venue> result) {
 				super.onPostExecute(result);
 
-				if (result != null) {
+				if (!result.isEmpty()) {
 					mAdapter = new VenueAdapter(getActivity(), result);
 					setListAdapter(mAdapter);
+
+					mCallbacks.onItemSelected((Venue) mAdapter.getItem(0));
 				}
 
 			}

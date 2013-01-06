@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.phamousapps.trendalert.R;
-import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.ui.phone.TrendingPlaceDetailActivity;
 import com.phamousapps.trendalert.ui.phone.TrendingPlaceListActivity;
 
