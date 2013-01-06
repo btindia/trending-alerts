@@ -1,7 +1,9 @@
 package com.phamousapps.trendalert.ui.phone;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 
 import com.phamousapps.trendalert.R;
@@ -38,6 +40,13 @@ public class SearchActivity extends FragmentActivity implements
 
 	@Override
 	public void onEditTextComplete(String string) {
+
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = sp.edit();
+
+		editor.putString(TrendingPlaceListActivity.SEARCH_PARAM_KEY, string);
+		editor.commit();
 
 		Intent listIntent = new Intent(this, TrendingPlaceListActivity.class);
 		listIntent.putExtra(TrendingPlaceListFragment.ARG_ITEM_ID, string);
