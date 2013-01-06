@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.phamousapps.trendalert.R;
-import com.phamousapps.trendalert.data.DummyContent;
+import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.ui.phone.TrendingPlaceDetailActivity;
 import com.phamousapps.trendalert.ui.phone.TrendingPlaceListActivity;
 
@@ -27,7 +27,7 @@ public class TrendingPlaceDetailFragment extends Fragment {
 	/**
 	 * The dummy content this fragment is presenting.
 	 */
-	private DummyContent.DummyItem mItem;
+	private String mItem;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -44,8 +44,7 @@ public class TrendingPlaceDetailFragment extends Fragment {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
-			mItem = DummyContent.ITEM_MAP.get(getArguments().getString(
-					ARG_ITEM_ID));
+			mItem = getArguments().getString(ARG_ITEM_ID);
 		}
 	}
 
@@ -58,7 +57,7 @@ public class TrendingPlaceDetailFragment extends Fragment {
 		// Show the dummy content as text in a TextView.
 		if (mItem != null) {
 			((TextView) rootView.findViewById(R.id.trendingplace_detail))
-					.setText(mItem.content);
+					.setText(mItem);
 		}
 
 		return rootView;
