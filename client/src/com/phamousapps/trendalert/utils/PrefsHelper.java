@@ -38,10 +38,15 @@ public class PrefsHelper {
 				context.getString(R.string.key_enable_sound), true);
 
 		String soundId = sp.getString(
-				context.getString(R.string.key_alert_frequency),
-				String.valueOf(R.raw.sound_01));
+				context.getString(R.string.key_alert_frequency), "1");
 
-		mSoundId = Integer.parseInt(soundId);
+		if ("2".equals(soundId)) {
+			mSoundId = R.raw.sound_02;
+		} else if ("3".equals(soundId)) {
+			mSoundId = R.raw.sound_03;
+		} else {
+			mSoundId = R.raw.sound_01;
+		}
 
 		mVibrationEnabled = sp.getBoolean(
 				context.getString(R.string.key_enable_vibration), false);
