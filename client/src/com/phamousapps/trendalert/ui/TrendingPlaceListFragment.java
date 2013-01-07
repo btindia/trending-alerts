@@ -143,7 +143,7 @@ public class TrendingPlaceListFragment extends Fragment implements
 		if (!mSearchParam.equals(searchParam)) {
 			mPrefsHelper = ph;
 			mSearchParam = searchParam;
-
+			
 			mViewSwitcher.showNext();
 			Criteria criteria = new Criteria();
 			String provider = mLocationManager.getBestProvider(criteria, true);
