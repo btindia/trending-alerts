@@ -119,7 +119,7 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 
 		Bundle arguments = new Bundle();
 		arguments.putString(TrendingPlaceListFragment.ARG_ITEM_ID,
-				ph.getSearchParam());
+				ph.getEncodedSearchParam());
 
 		TrendingPlaceListFragment fragment = new TrendingPlaceListFragment();
 		fragment.setArguments(arguments);
