@@ -14,12 +14,19 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.google.gson.Gson;
+import com.phamousapps.trendalert.R;
 import com.phamousapps.trendalert.data.FsResponse;
 import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.utils.FsSettings;
@@ -36,7 +43,7 @@ import com.phamousapps.trendalert.utils.RequestHelper;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class TrendingPlaceListFragment extends ListFragment implements
+public class TrendingPlaceListFragment extends Fragment implements
 		LocationListener {
 
 	private static final String LOG_TAG = TrendingPlaceListFragment.class
@@ -46,6 +53,10 @@ public class TrendingPlaceListFragment extends ListFragment implements
 
 	private LocationManager mLocationManager;
 	private VenueAdapter mAdapter;
+
+	private ListView mListView;
+	private ViewSwitcher mViewSwitcher;
+	private TextView mErrorTv;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -149,13 +160,25 @@ public class TrendingPlaceListFragment extends ListFragment implements
 	}
 
 	@Override
-	public void onListItemClick(ListView listView, View view, int position,
-			long id) {
-		super.onListItemClick(listView, view, position, id);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 
-		// Notify the active callbacks interface (the activity, if the
-		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected((Venue) mAdapter.getItem(position));
+		View root = inflater.inflate(R.layout.fragment_list_result, container,
+				false);
+
+		mListView = (ListView) root.findViewById(R.id.listview);
+		mViewSwitcher = (ViewSwitcher) root.findViewById(R.id.switcher);
+		mErrorTv = (TextView) root.findViewById(R.id.error);
+
+		mListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View v,
+					int position, long id) {
+				mCallbacks.onItemSelected((Venue) mAdapter.getItem(position));
+			}
+		});
+
+		return root;
 	}
 
 	@Override
@@ -174,16 +197,16 @@ public class TrendingPlaceListFragment extends ListFragment implements
 	public void setActivateOnItemClick(boolean activateOnItemClick) {
 		// When setting CHOICE_MODE_SINGLE, ListView will automatically
 		// give items the 'activated' state when touched.
-		getListView().setChoiceMode(
-				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
+		mListView
+				.setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 						: ListView.CHOICE_MODE_NONE);
 	}
 
 	private void setActivatedPosition(int position) {
 		if (position == ListView.INVALID_POSITION) {
-			getListView().setItemChecked(mActivatedPosition, false);
+			mListView.setItemChecked(mActivatedPosition, false);
 		} else {
-			getListView().setItemChecked(position, true);
+			mListView.setItemChecked(position, true);
 		}
 
 		mActivatedPosition = position;
@@ -280,10 +303,16 @@ public class TrendingPlaceListFragment extends ListFragment implements
 
 				if (!result.isEmpty()) {
 					mAdapter = new VenueAdapter(getActivity(), result);
-					setListAdapter(mAdapter);
+					mListView.setAdapter(mAdapter);
 					setActivateOnItemClick(true);
 
+				} else {
+
+					mListView.setVisibility(View.INVISIBLE);
+					mErrorTv.setVisibility(View.VISIBLE);
 				}
+
+				mViewSwitcher.showNext();
 			}
 		}.execute();
 	}
@@ -308,6 +337,5 @@ public class TrendingPlaceListFragment extends ListFragment implements
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-
 	}
 }
