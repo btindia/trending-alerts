@@ -43,6 +43,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TrendingPlaceListActivity" />
         </activity>
+        <activity
+            android:name=".ui.phone.PreferenceActivity"
+            android:label="@string/app_name" >
+        </activity>
 
         <receiver
             android:name=".notification.NotificationReceiver"
@@ -58,8 +62,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        
-        <service android:name=".alarm.FetchTrendingSearchesService"/>
+
+        <service android:name=".alarm.FetchTrendingSearchesService" />
     </application>
 
 </manifest>

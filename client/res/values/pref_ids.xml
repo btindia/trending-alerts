@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="key_search_param">search_param</string>
+    <string name="key_enable_alerts">enable_alerts</string>
+    <string name="key_alert_frequency">alert_frequency</string>
+    <string name="key_enable_sound">enable_sound</string>
+    <string name="key_sound_file">sound_file</string>
+    <string name="key_enable_vibration">enable_vibration</string>
+    <string name="key_intensity">vib_intensity</string>
+
+</resources>
