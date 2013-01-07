@@ -115,14 +115,7 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 
 	public void refreshListContents() {
 
-		PrefsHelper ph = new PrefsHelper(this);
-
-		Bundle arguments = new Bundle();
-		arguments.putString(TrendingPlaceListFragment.ARG_ITEM_ID,
-				ph.getEncodedSearchParam());
-
 		TrendingPlaceListFragment fragment = new TrendingPlaceListFragment();
-		fragment.setArguments(arguments);
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.trendingplace_list, fragment).commit();
 	}

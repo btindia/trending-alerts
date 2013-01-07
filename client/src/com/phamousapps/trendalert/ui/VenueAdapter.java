@@ -10,12 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.phamousapps.trendalert.R;
+import com.phamousapps.trendalert.data.FsCategory;
 import com.phamousapps.trendalert.data.Venue;
 
 public class VenueAdapter extends BaseAdapter {
 
-	private Context mContext;
-	private List<Venue> mVenues;
+	private final Context mContext;
+	private final List<Venue> mVenues;
 
 	public VenueAdapter(Context context, List<Venue> venues) {
 		mVenues = venues;
@@ -28,26 +29,38 @@ public class VenueAdapter extends BaseAdapter {
 		View view = convertView;
 
 		if (view == null) {
-			view = LayoutInflater.from(mContext).inflate(R.layout.list_item_venue, parent,
-					false);
+			view = LayoutInflater.from(mContext).inflate(
+					R.layout.list_item_venue, parent, false);
 		}
 
-		TextView id, name, hereNow, distance;
+		TextView id, name, hereNow, distance, category;
 		id = (TextView) view.findViewById(R.id.v_id);
 		name = (TextView) view.findViewById(R.id.v_name);
 		hereNow = (TextView) view.findViewById(R.id.v_here_now);
 		distance = (TextView) view.findViewById(R.id.v_distance);
+		category = (TextView) view.findViewById(R.id.v_category);
 
-		id.setText(mVenues.get(position).getId());
-		name.setText(mVenues.get(position).getName());
+		final Venue venue = mVenues.get(position);
 
-		String count = String
-				.valueOf(mVenues.get(position).getHereNow().getCount());
-		hereNow.setText(count);
+		id.setText(venue.getId());
+		name.setText(venue.getName());
 
-		String distanceVal = String.valueOf(mVenues.get(position).getLocation()
-				.getDistance());
+		String count = String.valueOf(venue.getHereNow().getCount());
+		hereNow.setText(mContext.getString(R.string.people_here_now) + count);
+
+		String distanceVal = String.valueOf(venue.getLocation().getDistance());
 		distance.setText(distanceVal);
+
+		FsCategory[] cats = venue.getCategories();
+		StringBuilder catBuilder = new StringBuilder();
+
+		for (FsCategory fsCategory : cats) {
+			catBuilder.append(fsCategory.getName()).append(',');
+		}
+		int lastComma = catBuilder.lastIndexOf(",");
+		catBuilder.deleteCharAt(lastComma);
+
+		category.setText(catBuilder.toString());
 
 		return view;
 	}

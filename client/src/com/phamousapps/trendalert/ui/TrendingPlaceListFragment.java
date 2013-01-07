@@ -53,10 +53,13 @@ public class TrendingPlaceListFragment extends Fragment implements
 
 	private LocationManager mLocationManager;
 	private VenueAdapter mAdapter;
+	private PrefsHelper mPrefsHelper;
 
 	private ListView mListView;
 	private ViewSwitcher mViewSwitcher;
 	private TextView mErrorTv;
+
+	private String mSearchParam;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -108,6 +111,9 @@ public class TrendingPlaceListFragment extends Fragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		mPrefsHelper = new PrefsHelper(getActivity());
+		mSearchParam = mPrefsHelper.getSearchParam();
+
 		mLocationManager = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
 
@@ -124,6 +130,25 @@ public class TrendingPlaceListFragment extends Fragment implements
 		Criteria criteria = new Criteria();
 		String provider = mLocationManager.getBestProvider(criteria, true);
 		mLocationManager.requestSingleUpdate(provider, this, null);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		// Get saved value, may be new
+		PrefsHelper ph = new PrefsHelper(getActivity());
+		String searchParam = ph.getSearchParam();
+
+		if (!mSearchParam.equals(searchParam)) {
+			mPrefsHelper = ph;
+			mSearchParam = searchParam;
+
+			mViewSwitcher.showNext();
+			Criteria criteria = new Criteria();
+			String provider = mLocationManager.getBestProvider(criteria, true);
+			mLocationManager.requestSingleUpdate(provider, this, null);
+		}
 	}
 
 	@Override
@@ -237,9 +262,7 @@ public class TrendingPlaceListFragment extends Fragment implements
 						FsResponse.class);
 
 				Venue[] trendingVenues = trending.getResponse().getVenues();
-
-				PrefsHelper ph = new PrefsHelper(getActivity());
-				String queryParam = ph.getEncodedSearchParam();
+				String queryParam = mPrefsHelper.getEncodedSearchParam();
 
 				Set<String> searchKeys = new HashSet<String>();
 				if (!queryParam.isEmpty()) {
