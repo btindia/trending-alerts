@@ -12,21 +12,35 @@ import com.phamousapps.trendalert.utils.LogHelper;
 public class AlarmHelper {
 	private static final String LOG_TAG = AlarmHelper.class.getSimpleName();
 
-	public AlarmHelper(Context context, long interval) {
-		final AlarmManager m = (AlarmManager) context
-				.getSystemService(Context.ALARM_SERVICE);
+	private final Context mContext;
+	private final AlarmManager mAlarmManager;
 
-		Intent intent = new Intent(context, FetchTrendingSearchesService.class);
-		PendingIntent pi = PendingIntent.getService(context, 0, intent, 0);
+	public AlarmHelper(Context context) {
+		mContext = context;
+		mAlarmManager = (AlarmManager) context
+				.getSystemService(Context.ALARM_SERVICE);
+	}
+
+	public void setAlarm(long interval) {
+		Intent intent = new Intent(mContext, FetchTrendingSearchesService.class);
+		PendingIntent pi = PendingIntent.getService(mContext, 0, intent, 0);
 
 		// m.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(),
 		// interval, pi);
 
-		m.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-				SystemClock.elapsedRealtime(), interval, pi);
+		mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+				SystemClock.elapsedRealtime(), interval * 1000, pi);
 
 		if (LogHelper.isLoggable(LOG_TAG)) {
 			Log.d(LOG_TAG, "Alarm set!");
 		}
+	}
+
+	public void cancelAlarm() {
+
+		Intent intent = new Intent(mContext, FetchTrendingSearchesService.class);
+		PendingIntent pi = PendingIntent.getService(mContext, 0, intent, 0);
+
+		mAlarmManager.cancel(pi);
 	}
 }
