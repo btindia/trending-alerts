@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -30,14 +31,6 @@
         <activity
             android:name=".ui.phone.TrendingPlaceDetailActivity"
             android:label="@string/title_trendingplace_detail"
-            android:parentActivityName=".TrendingPlaceListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TrendingPlaceListActivity" />
-        </activity>
-        <activity
-            android:name=".ui.phone.SearchActivity"
-            android:label="@string/title_search"
             android:parentActivityName=".TrendingPlaceListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
