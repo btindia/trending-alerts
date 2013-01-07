@@ -15,6 +15,7 @@ public class FsPrefsFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
 
 	private static final String LOG_TAG = FsPrefsFragment.class.getSimpleName();
+	private SharedPreferences mPrefs;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -22,9 +23,22 @@ public class FsPrefsFragment extends PreferenceFragment implements
 
 		addPreferencesFromResource(R.xml.prefs);
 
-		SharedPreferences sPrefs = PreferenceManager
-				.getDefaultSharedPreferences(getActivity());
-		sPrefs.registerOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		mPrefs.registerOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		if (mPrefs != null) {
+			mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+		}
 	}
 
 	@Override
