@@ -5,22 +5,30 @@
     android:orientation="vertical" >
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/v_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+    
     <TextView
         android:id="@+id/v_name"
+        android:textAppearance="@android:style/TextAppearance.Large"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+    
     <TextView
         android:id="@+id/v_here_now"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     
     <TextView
+        android:id="@+id/v_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    
+    <TextView
         android:id="@+id/v_distance"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

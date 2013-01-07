@@ -11,4 +11,7 @@ public class FsCategory {
 	JsonElement icon;
 	boolean primary;
 
+	public String getName() {
+		return name;
+	}
 }

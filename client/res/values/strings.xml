@@ -62,5 +62,6 @@
     <string name="pref_enter_as_many_as_you_apos_d_like_separated_by_a_comma">Enter as many as you\'d like, separated by a comma</string>
     <string name="pref_search">Search</string>
     <string name="oops">Ooops, apparently nothing is trending right now. I\'ll try again later, don\'t worry about me</string>
+    <string name="people_here_now">"People here now: "</string>
 
 </resources>
