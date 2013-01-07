@@ -54,7 +54,7 @@ public class FetchTrendingSearchesService extends IntentService {
 			Intent noteAction = new Intent(NotificationReceiver.ACTION);
 
 			NotificationPackage np = new NotificationPackage(fetchVenues(
-					location, ph.getSearchParam()));
+					location, ph.getEncodedSearchParam()));
 			noteAction.putExtra(NotificationPackage.ARG_KEY, np);
 
 			sendBroadcast(noteAction);

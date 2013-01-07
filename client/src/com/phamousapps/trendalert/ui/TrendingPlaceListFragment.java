@@ -239,7 +239,7 @@ public class TrendingPlaceListFragment extends Fragment implements
 				Venue[] trendingVenues = trending.getResponse().getVenues();
 
 				PrefsHelper ph = new PrefsHelper(getActivity());
-				String queryParam = ph.getSearchParam();
+				String queryParam = ph.getEncodedSearchParam();
 
 				Set<String> searchKeys = new HashSet<String>();
 				if (!queryParam.isEmpty()) {

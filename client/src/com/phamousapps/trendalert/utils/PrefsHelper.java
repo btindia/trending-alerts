@@ -1,5 +1,8 @@
 package com.phamousapps.trendalert.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -11,7 +14,7 @@ public class PrefsHelper {
 
 	private static final String LOG_TAG = PrefsHelper.class.getSimpleName();
 
-	private final String mSearchParam;
+	private String mSearchParam;
 	private final boolean mAlertsEnabled;
 	private final long mAlertsFrequency;
 	private final boolean mSoundEnabled;
@@ -26,6 +29,7 @@ public class PrefsHelper {
 
 		mSearchParam = sp.getString(
 				context.getString(R.string.key_search_param), "");
+		mSearchParam = mSearchParam.trim();
 
 		mAlertsEnabled = sp.getBoolean(
 				context.getString(R.string.key_enable_alerts), true);
@@ -71,6 +75,16 @@ public class PrefsHelper {
 
 	public String getSearchParam() {
 		return mSearchParam;
+	}
+
+	public String getEncodedSearchParam() {
+
+		try {
+			return URLEncoder.encode(mSearchParam, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return mSearchParam;
+		}
 	}
 
 	public boolean isAlertsEnabled() {
