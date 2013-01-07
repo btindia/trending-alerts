@@ -12,12 +12,12 @@
         <item>Sound 3</item>
     </string-array>
 
-    <string name="default_sound">@raw/sound_01</string>
+    <string name="default_sound">1</string>
 
     <string-array name="sound_files">
-        <item>@raw/sound_01</item>
-        <item>@raw/sound_02</item>
-        <item>@raw/sound_03</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
     <string-array name="alert_frequency">
         <item>1 minute</item>

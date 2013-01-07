@@ -8,14 +8,12 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
@@ -24,9 +22,9 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.phamousapps.trendalert.data.FsResponse;
 import com.phamousapps.trendalert.data.Venue;
-import com.phamousapps.trendalert.ui.phone.TrendingPlaceListActivity;
 import com.phamousapps.trendalert.utils.FsSettings;
 import com.phamousapps.trendalert.utils.LogHelper;
+import com.phamousapps.trendalert.utils.PrefsHelper;
 import com.phamousapps.trendalert.utils.RequestHelper;
 
 /**
@@ -95,42 +93,15 @@ public class TrendingPlaceListFragment extends ListFragment implements
 	public TrendingPlaceListFragment() {
 	}
 
-	private String mQueryParam;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mLocationManager = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
-		boolean enabled = mLocationManager
-				.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-		mQueryParam = "";
-
-		Bundle argExtras = getArguments();
-		if (argExtras != null) {
-			mQueryParam = argExtras.getString(ARG_ITEM_ID);
-		}
-
-		Bundle intentExtras = getActivity().getIntent().getExtras();
-		if (intentExtras != null) {
-			mQueryParam = intentExtras
-					.getString(TrendingPlaceListFragment.ARG_ITEM_ID);
-		}
-
-		if (mQueryParam.isEmpty()) {
-
-			SharedPreferences sp = PreferenceManager
-					.getDefaultSharedPreferences(getActivity());
-			mQueryParam = sp.getString(
-					TrendingPlaceListActivity.SEARCH_PARAM_KEY, "");
-		}
-
-		if (LogHelper.isLoggable(LOG_TAG)) {
-			Log.d(LOG_TAG, "mQueryParam: " + mQueryParam);
-		}
-
+		// boolean enabled = mLocationManager
+		// .isProviderEnabled(LocationManager.GPS_PROVIDER);
 		// Check if enabled and if not send user to the GSP settings
 		// Better solution would be to display a dialog and suggesting to
 		// go to the settings
@@ -244,12 +215,15 @@ public class TrendingPlaceListFragment extends ListFragment implements
 
 				Venue[] trendingVenues = trending.getResponse().getVenues();
 
+				PrefsHelper ph = new PrefsHelper(getActivity());
+				String queryParam = ph.getSearchParam();
+
 				Set<String> searchKeys = new HashSet<String>();
-				if (!mQueryParam.isEmpty()) {
+				if (!queryParam.isEmpty()) {
 					builder = new StringBuilder();
 					builder.append(FsSettings.URL_SEARCH_AUTH).append(
 							locationParams);
-					builder.append("&query=").append(mQueryParam);
+					builder.append("&query=").append(queryParam);
 					String searchUrl = builder.toString();
 
 					String searchResponse = RequestHelper.simpleGet(searchUrl);

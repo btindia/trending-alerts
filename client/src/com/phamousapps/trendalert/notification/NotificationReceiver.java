@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -17,6 +18,7 @@ import com.phamousapps.trendalert.R;
 import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.ui.phone.TrendingPlaceListActivity;
 import com.phamousapps.trendalert.utils.LogHelper;
+import com.phamousapps.trendalert.utils.PrefsHelper;
 
 /**
  * Handles the displaying of all Notification within the application. You can
@@ -61,8 +63,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 	private void buildAndShowNotification(PendingIntent pIntent,
 			NotificationPackage notePackage, int id) {
 
-		Notification notification;
+		PrefsHelper ph = new PrefsHelper(mContext);
+		if (!ph.isAlertsEnabled()) {
+			return;
+		}
 
+		Notification notification;
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				mContext);
 
@@ -74,6 +80,18 @@ public class NotificationReceiver extends BroadcastReceiver {
 
 			builder.setSmallIcon(R.drawable.ic_launcher);
 			builder.setContentIntent(pIntent);
+
+			if (ph.isSoundEnabled()) {
+				int soundFile = ph.getSoundId();
+
+				if (LogHelper.isLoggable(LOG_TAG)) {
+					Log.d(LOG_TAG, "Sound int: " + soundFile);
+				}
+
+				// Custom notification sound
+				builder.setSound(Uri.parse("android.resource://"
+						+ mContext.getPackageName() + "/" + soundFile));
+			}
 
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 
@@ -99,7 +117,18 @@ public class NotificationReceiver extends BroadcastReceiver {
 			}
 
 			notification.defaults |= Notification.DEFAULT_LIGHTS;
-			notification.defaults |= Notification.DEFAULT_VIBRATE;
+
+			if (ph.isVibrationEnabled()) {
+				String intensity = ph.getVibrationIntensity();
+
+				if ("Low".equals(intensity)) {
+					notification.vibrate = new long[] { 0, 100, 100, 100 };
+				} else if ("Medium".equals(intensity)) {
+					notification.vibrate = new long[] { 0, 150, 75, 150 };
+				} else {
+					notification.vibrate = new long[] { 0, 175, 50, 175 };
+				}
+			}
 
 			// Hide the notification after its selected
 			notification.flags |= Notification.FLAG_AUTO_CANCEL;
