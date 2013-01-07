@@ -9,11 +9,9 @@ import java.util.Set;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -21,9 +19,9 @@ import com.phamousapps.trendalert.data.FsResponse;
 import com.phamousapps.trendalert.data.Venue;
 import com.phamousapps.trendalert.notification.NotificationPackage;
 import com.phamousapps.trendalert.notification.NotificationReceiver;
-import com.phamousapps.trendalert.ui.phone.TrendingPlaceListActivity;
 import com.phamousapps.trendalert.utils.FsSettings;
 import com.phamousapps.trendalert.utils.LogHelper;
+import com.phamousapps.trendalert.utils.PrefsHelper;
 import com.phamousapps.trendalert.utils.RequestHelper;
 
 public class FetchTrendingSearchesService extends IntentService {
@@ -50,18 +48,18 @@ public class FetchTrendingSearchesService extends IntentService {
 		locationManager.getBestProvider(criteria, false);
 		Location location = locationManager.getLastKnownLocation(provider);
 
-		SharedPreferences sp = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		String queryParam = sp.getString(
-				TrendingPlaceListActivity.SEARCH_PARAM_KEY, "");
+		PrefsHelper ph = new PrefsHelper(this);
+		if (ph.isAlertsEnabled()) {
 
-		Intent noteAction = new Intent(NotificationReceiver.ACTION);
+			Intent noteAction = new Intent(NotificationReceiver.ACTION);
 
-		NotificationPackage np = new NotificationPackage(fetchVenues(location,
-				queryParam));
-		noteAction.putExtra(NotificationPackage.ARG_KEY, np);
+			NotificationPackage np = new NotificationPackage(fetchVenues(
+					location, ph.getSearchParam()));
+			noteAction.putExtra(NotificationPackage.ARG_KEY, np);
 
-		sendBroadcast(noteAction);
+			sendBroadcast(noteAction);
+
+		}
 	}
 
 	private ArrayList<Venue> fetchVenues(Location location, String queryParam) {
