@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:title="@string/pref_search" >
+        <EditTextPreference
+            android:defaultValue=""
+            android:dialogMessage="@string/pref_enter_as_many_as_you_apos_d_like_separated_by_a_comma"
+            android:dialogTitle="@string/pref_alert_searches"
+            android:key="@string/key_search_param"
+            android:summary="@string/pref_edit_your_alert_search_key"
+            android:title="@string/pref_alert_searches" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_cat_alert_preferences" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_enable_alerts"
+            android:summary="@string/pref_allow_this_application_to_prompt_notifications"
+            android:title="@string/pref_enable_alerts" />
+
+        <ListPreference
+            android:defaultValue="@string/default_freq"
+            android:dependency="@string/key_enable_alerts"
+            android:dialogTitle="@string/pref_choose_alert_frequency"
+            android:entries="@array/alert_frequency"
+            android:entryValues="@array/alert_freq_vals_in_seconds"
+            android:key="@string/key_alert_frequency"
+            android:summary="@string/pref_choose_how_often_to_check_for_trending_alerts"
+            android:title="@string/pref_choose_alert_frequency" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="@string/key_enable_alerts"
+            android:key="@string/key_enable_sound"
+            android:summary="@string/pref_allow_alerts_to_play_a_sound"
+            android:title="@string/pref_play_alert_sound" />
+
+        <ListPreference
+            android:defaultValue="@string/default_sound"
+            android:dependency="@string/key_enable_alerts"
+            android:dialogTitle="@string/pref_choose_an_alert_sound"
+            android:entries="@array/alert_sounds"
+            android:entryValues="@array/sound_files"
+            android:key="@string/key_sound_file"
+            android:summary="@string/pref_choose_a_sound_to_play_when_you_receive_an_alert"
+            android:title="@string/pref_choose_an_alert_sound" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="@string/key_enable_alerts"
+            android:key="@string/key_enable_vibration"
+            android:summary="@string/pref_allow_alerts_to_vibrate"
+            android:title="@string/pref_enable_vibration" />
+
+        <ListPreference
+            android:defaultValue="@string/default_vib"
+            android:dependency="@string/key_enable_alerts"
+            android:dialogTitle="@string/pref_choose_a_vibration_intensity"
+            android:entries="@array/vibration_intensity"
+            android:entryValues="@array/vibration_intensity"
+            android:key="@string/key_intensity"
+            android:summary="@string/pref_choose_a_vibration_intensity_when_you_receive_an_alert"
+            android:title="@string/pref_choose_a_vibration_intensity" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

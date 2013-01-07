@@ -95,7 +95,7 @@ public class TrendingPlaceListActivity extends FragmentActivity implements
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 
-		Intent detailIntent = new Intent(this, SearchActivity.class);
+		Intent detailIntent = new Intent(this, PreferenceActivity.class);
 		startActivity(detailIntent);
 
 		return super.onMenuItemSelected(featureId, item);

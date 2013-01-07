@@ -4,6 +4,62 @@
     <string name="app_name">TrendAlert</string>
     <string name="title_trendingplace_detail">TrendingPlace Detail</string>
     <string name="title_search">Search</string>
-    <string name="menu_search">Search</string>
+    <string name="menu_search">Settings</string>
+
+    <string-array name="alert_sounds">
+        <item>Sound 1</item>
+        <item>Sound 2</item>
+        <item>Sound 3</item>
+    </string-array>
+
+    <string name="default_sound">@raw/sound_01</string>
+
+    <string-array name="sound_files">
+        <item>@raw/sound_01</item>
+        <item>@raw/sound_02</item>
+        <item>@raw/sound_03</item>
+    </string-array>
+    <string-array name="alert_frequency">
+        <item>1 minute</item>
+        <item>15 minutes</item>
+        <item>1 hour</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+    </string-array>
+
+    <string name="default_freq">3600</string>
+
+    <string-array name="alert_freq_vals_in_seconds">
+        <item>60</item>
+        <item>900</item>
+        <item>3600</item>
+        <item>43200</item>
+        <item>86400</item>
+    </string-array>
+    <string-array name="vibration_intensity">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+    <string name="default_vib">Low</string>
+    <string name="pref_edit_your_alert_search">Edit your alert search key</string>
+    <string name="pref_choose_a_vibration_intensity">Choose a vibration intensity</string>
+    <string name="pref_choose_a_vibration_intensity_when_you_receive_an_alert">Choose a vibration intensity when you receive an alert</string>
+    <string name="pref_enable_vibration">Enable vibration</string>
+    <string name="pref_allow_alerts_to_vibrate">Allow alerts to vibrate</string>
+    <string name="pref_choose_an_alert_sound">Choose an alert sound</string>
+    <string name="pref_choose_a_sound_to_play_when_you_receive_an_alert">Choose a sound to play when you receive an alert</string>
+    <string name="pref_play_alert_sound">Play alert sound</string>
+    <string name="pref_allow_alerts_to_play_a_sound">Allow alerts to play a sound</string>
+    <string name="pref_choose_alert_frequency">Choose alert frequency</string>
+    <string name="pref_choose_how_often_to_check_for_trending_alerts">Choose how often to check for trending alerts</string>
+    <string name="pref_enable_alerts">Enable Alerts</string>
+    <string name="pref_allow_this_application_to_prompt_notifications">Allow this application to prompt notifications</string>
+    <string name="pref_cat_alert_preferences">Alert Preferences</string>
+    <string name="pref_alert_searches">Alert Searches</string>
+    <string name="pref_edit_your_alert_search_key">Edit your alert search key</string>
+    <string name="pref_enter_as_many_as_you_apos_d_like_separated_by_a_comma">Enter as many as you&amp;apos;d like, separated by a comma</string>
+    <string name="pref_search">Search</string>
 
 </resources>
